@@ -5,6 +5,7 @@ on:
     branches:
     - main
 
+
 jobs:
   deploy:
     name: Upload to Amazon S3
@@ -25,5 +26,5 @@ jobs:
 
     - name: Copy files to the test website with the AWS CLI
       run: aws s3 sync . s3://${{ secrets.AWS_BUCKET }} --acl public-read --follow-symlinks --delete
-      
+
     
