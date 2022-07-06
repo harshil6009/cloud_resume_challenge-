@@ -1,0 +1,34 @@
+name: Upload Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "website/**" 
+    
+
+
+
+jobs:
+  deploy:
+    name: Upload to Amazon S3
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE }}
+        aws-region: ap-southeast-2
+
+    - name: Copy files to the test website with the AWS CLI
+      run: aws s3 sync website/ s3://${{ secrets.AWS_BUCKET }} --acl public-read --follow-symlinks --delete --size-only
+
+    
